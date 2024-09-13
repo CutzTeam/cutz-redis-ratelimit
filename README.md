@@ -1,4 +1,4 @@
-# cutz-redis-ratelimit (1.0.1)
+# cutz-redis-ratelimit (1.0.2)
 
 `cutz-redis-ratelimit` is a simple and efficient rate limiting library using Upstash Redis. It provides built-in methods for handling rate limiting, calculating retry times, and creating rate limit responses.
 
@@ -28,6 +28,14 @@ const ratelimit = new Ratelimit({
   token: process.env.UPSTASH_REDIS_TOKEN ?? "",
   time: "10 s",
   maxRequests: 1,
+  logging: true, // optional
+  whitelist: ["127.0.0.1"], // optional
+  blacklist: ["203.0.113.1"], // optional
+  blacklistConfig: {
+    // optional
+    blockDuration: 7200 * 1000,
+    message: "Your IP has been blacklisted.",
+  },
 });
 ```
 
@@ -84,6 +92,10 @@ constructor(options: RatelimitOptions)
   - token: The Upstash Redis token.
   - time: The time duration for the ratelimit (e.g., "10 s").
   - maxRequests: The maximum number of requests allowed within the window.
+  - logging: (Optional) Enable logging for debugging purposes.
+  - whitelist: (Optional) An array of IP addresses to whitelist.
+  - blacklist: (Optional) An array of IP addresses to blacklist.
+  - blacklistConfig: (Optional) Configuration for blacklisted IPs, including block duration and message.
 
 #### Methods
 
@@ -115,6 +127,23 @@ Creates a rate limit response with the appropriate headers.
 
 - retryAfter: The retry-after time in seconds.
 - Returns a Response object with a 429 status code and the retry-after header.
+
+```typescript
+createBlacklistResponse(): Response
+```
+
+Creates a blacklist response with the appropriate message.
+
+- Returns a Response object with a 403 status code and the blacklist message.
+
+```typescript
+updateConfig({ time, maxRequests }: { time: Duration; maxRequests: number }): void
+```
+
+Updates the rate limit configuration.
+
+- time: The new time duration for the rate limit.
+- maxRequests: The new maximum number of requests allowed within the window.
 
 ### License
 

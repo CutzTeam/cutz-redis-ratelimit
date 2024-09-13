@@ -24,8 +24,8 @@ Create an instance of the `Ratelimit` class by providing the necessary configura
 
 ```typescript
 const ratelimit = new Ratelimit({
-  url: process.env.UPSTASH_REDIS_URL,
-  token: process.env.UPSTASH_REDIS_TOKEN,
+  url: process.env.UPSTASH_REDIS_URL ?? "",
+  token: process.env.UPSTASH_REDIS_TOKEN ?? "",
   time: "10 s",
   maxRequests: 1,
 });
